@@ -1,1 +1,3 @@
 GRUB_CMDLINE_LINUX="find_pressed=/preseed.cfg auto noprompt priority=critical locale=en_US net.ifnames=0 biosdevname=0"
+grub-mkconfig -o /boot/grub/grub.cfg
+reboot
