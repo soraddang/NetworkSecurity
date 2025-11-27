@@ -1,0 +1,67 @@
+Rule 1. 
+alert icmp any any ->any any (msg:”First Test”; sid:3000001;)
+
+
+단계 1] nano /etc/snort/local.rules                   # Rule 생성
+단계 2] snort –T –c /etc/snort/snort.conf             # Rule 테스트 및 오류 검사 
+단계 3] snort –I eth0 –c /etc/snort/snort.conf        # Rule 을 인터페이스에 적용 
+
+<공격자  Kali>  ping 192.168.10.10
+
+단계4] tail -f /var/log/snort/snort.alert.fast                          # 탐지 로그 확인
+
+
+Rule 2.
+alert tcp any any -> 192.168.10.0/24 21 (msg:"FTP Admin Access";content:"USER msfadmin";nocase; sid:3000002;)
+
+단계 1] nano /etc/snort/local.rules                                         # Rule 생성
+단계 2] snort –T –c /etc/snort/snort.conf                                   # Rule 테스트 및 오류 검사 
+단계 3] snort –I eth0 –c /etc/snort/snort.conf                             # Rule 을 인터페이스에 적용 
+
+<공격자 kali> ftp 192.168.10.20
+
+단계4] tail -f /var/log/snort/snort.alert.fast                          # 탐지 로그 확인
+
+
+Rule 3. Port Scan Attack Detection Rule
+alert tcp 192.168.10.10 any -> 192.168.10.20 any (msg:"Xmas Port Scan Detection";flags:UPF;sid:3000003;)
+
+단계 1] nano /etc/snort/local.rules                                             # Rule 생성
+단계 2] snort –T –c /etc/snort/snort.conf                                       # Rule 테스트 및 오류 검사 
+단계 3] snort –I eth0 –c /etc/snort/snort.conf                                   # Rule 을 인터페이스에 적용 
+
+<공격자  Kali>  nmap –sX 192.168.10.20
+
+단계4] tail -f /var/log/snort/snort.alert.fast                                  # 탐지 로그 확인
+
+
+Rule 4. Password Cracking Attack Detection Rule 
+
+alert tcp 192.168.10.20 23 -> any  any  (msg: “Telnet Fail“; content:“login incorrect“; nocase; id:3000004;)
+
+또는 
+
+alert tcp 192.168.10.20 23 -> 192.168.10.10 any ( msg: “Telnet Attack“; content:“login incorrect“; nocase; threshold:type both, track by_src, count 3, seconds 20; sid:3000004;)
+
+단계 1] nano /etc/snort/local.rules                                             # Rule 생성
+단계 2] snort –T –c /etc/snort/snort.conf                                       # Rule 테스트 및 오류 검사 
+단계 3] snort –I eth0 –c /etc/snort/snort.conf                                  # Rule 을 인터페이스에 적용 
+
+<공격자  Kali>  telnet 192.168.10.20
+
+단계4] tail -f /var/log/snort/snort.alert.fast                                    # 탐지 로그 확인
+
+
+Rule 5. SYN Flooding Attack Detection Rule 
+
+alert tcp any any -> 192.168.10.0/24 80 (msg:"TCP SYN Flooding Attack"; flags:S; threshold:type threshold, track by_src, count 2, seconds 10; sid:3000005;)
+
+단계 1] nano /etc/snort/local.rules                                             # Rule 생성
+단계 2] snort –T –c /etc/snort/snort.conf                                       # Rule 테스트 및 오류 검사 
+단계 3] snort –I eth0 –c /etc/snort/snort.conf                                  # Rule 을 인터페이스에 적용 
+
+<공격자  Kali>  hping3 --rand-source 192.168.10.20 –p 80 –S --flood
+
+단계4] tail -f /var/log/snort/snort.alert.fast                                   # 탐지 로그 확인
+
+
