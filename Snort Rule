@@ -41,7 +41,7 @@ alert tcp 192.168.10.20 23 -> any  any  (msg: “Telnet Fail“; content:“logi
 
 또는 
 
-alert tcp 192.168.10.20 23 -> 192.168.10.10 any ( msg: “Telnet Attack“; content:“login incorrect“; nocase; threshold:type both, track by_src, count 3, seconds 20; sid:3000004;)
+alert tcp 192.168.10.20 23 -> 192.168.10.10 any ( msg: “Telnet Password Crack Attack“; content:“login incorrect“; nocase; threshold:type both, track by_src, count 3, seconds 20; sid:3000004;)
 
 단계 1] nano /etc/snort/local.rules                                             # Rule 생성
 단계 2] snort –T –c /etc/snort/snort.conf                                       # Rule 테스트 및 오류 검사 
