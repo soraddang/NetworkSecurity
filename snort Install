@@ -1,8 +1,7 @@
 apt-get update
 apt-get install –y net-tools
 nano /etc/default/grub 
-     GRUB_CMDLINE_LINUX="find_pressed=/preseed.cfg auto noprompt   
-     priority=critical locale=en_US net.ifnames=0 biosdevname=0"
+     GRUB_CMDLINE_LINUX="find_pressed=/preseed.cfg auto noprompt priority=critical locale=en_US net.ifnames=0 biosdevname=0"
 grub-mkconfig -o /boot/grub/grub.cfg
 reboot
 
